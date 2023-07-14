@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment');
 
 const SpendingItemSchema = new mongoose.Schema({
     title: {
@@ -13,9 +14,18 @@ const SpendingItemSchema = new mongoose.Schema({
         requried: true
     },
     spendingDate: {
-        type: Date,
-        default: Date.now().toString().slice(0,10)
+        type: String,
+        default: moment().format('DD-MM-YYYY')
     }
 })
+
+SpendingItemSchema.pre('save', function (next) {
+    if (this.isModified('spendingDate')) {
+      // Extract the date portion without the time
+      const dateWithoutTime = moment(this.spendingDate, 'DD-MM-YYYY').format('DD-MM-YYYY');
+      this.spendingDate = dateWithoutTime;
+    }
+    next();
+  });
 
 module.exports = mongoose.model("SpendingItems", SpendingItemSchema)

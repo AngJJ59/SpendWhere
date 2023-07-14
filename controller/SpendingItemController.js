@@ -1,6 +1,8 @@
 const SpendingItem = require('../model/SpendingItem')
 
 module.exports.createSpendingItem = (req, res) => {
+    const formattedDate = req.body.spendingDate.toISOString()
+
     const spendingItem = new SpendingItem({
         title: req.body.title,
         description: req.body.description,
